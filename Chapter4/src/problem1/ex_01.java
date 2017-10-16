@@ -1,4 +1,4 @@
-/*노래를 나타내는 Song이라는 클래스를 설계하라. Song클래스는 다음과 같은 필드를 갖는다.
+package problem1;/*노래를 나타내는 Song이라는 클래스를 설계하라. Song클래스는 다음과 같은 필드를 갖는다.
         1.노래의 제목을 나타내는 title
         2.가수를 나타내는 artist
         3.노래가 속한 앨범 제목을 나타내는 album
@@ -51,6 +51,7 @@ class Song {
     }
 
 }
+
 public class ex_01 {
     public static void main(String[] args) {
         Song s1=new Song();
