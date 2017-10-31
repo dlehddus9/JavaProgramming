@@ -22,6 +22,8 @@ n명이 참가하는 끝말잇기 게임을 프로그램으로 만들어보자. 
 package OpenChallenge;
 import java.util.Scanner;
 
+import static OpenChallenge.Player.succeed;
+
 public class WordGameApp {
 
     public static void main(String[] args) {
@@ -56,16 +58,6 @@ public class WordGameApp {
 
 
         }
-        public static boolean succeed(String word, String postword)
-        {
-            int lastIndex = word.length()-1;
-            char lastChar = word.charAt(lastIndex); //마지막 글자
-            char firstChar = postword.charAt(0);
-            if(lastChar==firstChar)
-            {
-                return true;
-            }
-            return false;
-        }
+
 
 }
