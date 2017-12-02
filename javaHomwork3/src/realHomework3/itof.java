@@ -92,8 +92,8 @@ public class itof{
         return postfix.toString();
     }
 
-    public int evaluate(String expr) {
-        //   assert (isValid(expr));
+    public double  evaluate(String expr) {
+        //assert (isValid(expr));
 
         Stack stack = new Stack();
         int op1, op2, result = 0;
@@ -116,6 +116,7 @@ public class itof{
         result = ((Integer) stack.pop()).intValue();
         return result;
     }
+
 
     private int evalSingleOp(char operation, int op1, int op2) {
         int result = 0;
@@ -143,7 +144,6 @@ public class itof{
     public static void main(String[] args) {  // Test method for the class.
 
         String[] testString = {"3.0+2.0*1.5-(3.5+1.5)-2.0"};
-
         itof converter = new itof();
 
         System.out.println("\nTest for convertToPostfix:\n");
@@ -151,8 +151,12 @@ public class itof{
         for (int i=0; i<testString.length; i++) {
             System.out.println("infix: " + testString[i]);
             System.out.println("postfix: " + converter.convertToPostfix(testString[i]));
+               }
 
-        }
+        System.out.println("계산결과" +converter.evaluate("3.0 2.0 1.5 * + 3.5 1.5 + - 2.0 -"));
+
+
+
     } // end main
 
 
