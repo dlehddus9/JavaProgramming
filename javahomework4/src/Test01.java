@@ -15,7 +15,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-class Calculator extends JFrame implements ActionListener{
+class Calculator extends JFrame{
 
     final int MAX_INPUT_LENGTH = 20;
     final int INPUT_MODE = 0;
@@ -42,7 +42,7 @@ class Calculator extends JFrame implements ActionListener{
         jplMaster = new JPanel();
 
 
-        textOutput = new JLabel("5");
+        textOutput = new JLabel("0");
         textOutput.setHorizontalTextPosition(JLabel.LEFT);
         textOutput.setBackground(Color.WHITE);
         //textOutput.setMinimumSize(new Dimension(100, 40));
@@ -146,11 +146,8 @@ class Calculator extends JFrame implements ActionListener{
         getContentPane().add(jplMaster, BorderLayout.SOUTH);
         requestFocus();
 
-        for (int i=0; i<jbnButtons.length; i++){
-            jbnButtons[i].addActionListener(this);
-        }
 
-        clearAll();
+
 
         addWindowListener(new WindowAdapter() {
 
@@ -163,303 +160,7 @@ class Calculator extends JFrame implements ActionListener{
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    public void actionPerformed(ActionEvent e){
-        double result = 0;
 
-        for (int i=0; i<jbnButtons.length; i++)
-        {
-            if(e.getSource() == jbnButtons[i])
-            {
-                switch(i)
-                {
-                    case 0 :
-                    case 1:
-                    case 2:
-                    case 3:
-                    case 4:
-                    case 5:
-                    case 6:
-                    case 7:
-                    case 8:
-                    case 9:
-                        addDigitToDisplay(i);
-                        break;
-
-                    case 10:	// +/-
-                        processSignChange();
-                        break;
-
-                    case 11:
-                        addDecimalPoint();
-                        break;
-
-                    case 12:	// =
-                        processEquals();
-                        break;
-
-                    case 13:	// 나누기
-                        processOperator("/");
-                        break;
-
-                    case 14:	// 곱하기
-                        processOperator("*");
-                        break;
-
-                    case 15:	// 뺄셈
-                        processOperator("-");
-                        break;
-
-                    case 16:	// 더하기
-                        processOperator("+");
-                        break;
-
-                    case 17:	// sqrt
-                        if (displayMode != ERROR_MODE)
-                        {
-                            try
-                            {
-                                if (getDisplayString().indexOf("-") == 0)
-                                    displayError("SQR에 적합하지 않은 수입니다."); //root�� -���� ����̹Ƿ� ó���ȵ�
-
-                                result = Math.sqrt(getNumberInDisplay());
-                                displayResult(result);
-                            }
-
-                            catch(Exception ex)
-                            {
-                                displayError("SQRT�� ��ȿ�� ���� �ƴմϴ�!");
-                                displayMode = ERROR_MODE;
-                            }
-                        }
-                        break;
-
-                    case 18:	// 1/x
-                        if (displayMode != ERROR_MODE){
-                            try
-                            {
-                                if (getNumberInDisplay() == 0)
-                                    displayError("0���� ������ �����ϴ�!");
-
-                                result = 1 / getNumberInDisplay();
-                                displayResult(result);
-                            }
-
-                            catch(Exception ex)	{
-                                displayError("0���� ������ �����ϴ�!");
-                                displayMode = ERROR_MODE;
-                            }
-                        }
-                        break;
-
-                    case 19:	// %
-                        if (displayMode != ERROR_MODE){
-                            try	{
-                                result = getNumberInDisplay() / 100;
-                                displayResult(result);
-                            }
-
-                            catch(Exception ex)	{
-                                displayError("��ȿ�� ���� �ƴմϴ�!");
-                                displayMode = ERROR_MODE;
-                            }
-                        }
-                        break;
-
-                    case 20:	// backspace
-                        if (displayMode != ERROR_MODE){
-                            setDisplayString(getDisplayString().substring(0,
-                                    getDisplayString().length() - 1));
-
-                            if (getDisplayString().length() < 1)
-                                setDisplayString("0");
-                        }
-                        break;
-
-                    case 21:	// CE
-                        clearExisting();
-                        break;
-
-                    case 22:	// C
-                        clearAll();
-                        break;
-                }
-            }
-        }
-    }
-
-    void setDisplayString(String s){
-        textOutput.setText(s);
-    }
-
-    String getDisplayString (){
-        return textOutput.getText();
-    }
-
-    //OUTPUT â�� ���ڸ� �����, �ִ� 20��(MAX_INPUT_LENGTH)����
-    void addDigitToDisplay(int digit){
-        if (clearOnNextDigit)
-            setDisplayString("");
-
-        String inputString = getDisplayString();
-
-        if (inputString.indexOf("0") == 0){
-            inputString = inputString.substring(1);
-        }
-
-        if ((!inputString.equals("0") || digit > 0)  && inputString.length() < MAX_INPUT_LENGTH){
-            setDisplayString(inputString + digit);
-        }
-
-
-        displayMode = INPUT_MODE;
-        clearOnNextDigit = false;
-    }
-
-    //OUTPUTâ�� �Ҽ����� �����
-    void addDecimalPoint(){
-        displayMode = INPUT_MODE;
-
-        if (clearOnNextDigit)
-            setDisplayString("");
-
-        String inputString = getDisplayString();
-
-
-        if (inputString.indexOf(".") < 0)
-            setDisplayString(new String(inputString + "."));
-    }
-
-    //OUTPUTâ�� ���� ��ȣ�� �ٲ�
-    void processSignChange(){
-        if (displayMode == INPUT_MODE)
-        {
-            String input = getDisplayString();
-
-            if (input.length() > 0 && !input.equals("0"))
-            {
-                if (input.indexOf("-") == 0)
-                    setDisplayString(input.substring(1));
-
-                else
-                    setDisplayString("-" + input);
-            }
-
-        }
-
-        else if (displayMode == RESULT_MODE)
-        {
-            double numberInDisplay = getNumberInDisplay();
-
-            if (numberInDisplay != 0)
-                displayResult(-numberInDisplay);
-        }
-    }
-
-    void clearAll()	{
-        setDisplayString("0");
-        lastOperator = "0";
-        lastNumber = 0;
-        displayMode = INPUT_MODE;
-        clearOnNextDigit = true;
-    }
-
-    void clearExisting(){
-        setDisplayString("0");
-        clearOnNextDigit = true;
-        displayMode = INPUT_MODE;
-    }
-
-    double getNumberInDisplay()	{
-        String input = textOutput.getText();
-        return Double.parseDouble(input);
-    }
-
-
-    void processOperator(String op) {
-        if (displayMode != ERROR_MODE)
-        {
-            double numberInDisplay = getNumberInDisplay();
-
-            if (!lastOperator.equals("0"))
-            {
-                try
-                {
-                    double result = processLastOperator();
-                    displayResult(result);
-                    lastNumber = result;
-                }
-
-                catch (DivideByZeroException e)
-                {
-                }
-            }
-
-            else
-            {
-                lastNumber = numberInDisplay;
-            }
-
-            clearOnNextDigit = true;
-            lastOperator = op;
-        }
-    }
-
-    void processEquals(){
-        double result = 0;
-
-        if (displayMode != ERROR_MODE){
-            try
-            {
-                result = processLastOperator();
-                displayResult(result);
-            }
-
-            catch (DivideByZeroException e)	{
-                displayError("0으로 나눌수 없습니다.");
-            }
-
-            lastOperator = "0";
-        }
-    }
-
-
-    double processLastOperator() throws DivideByZeroException {
-        double result = 0;
-        double numberInDisplay = getNumberInDisplay();
-
-        if (lastOperator.equals("/"))
-        {
-            if (numberInDisplay == 0)
-                throw (new DivideByZeroException());
-
-            result = lastNumber / numberInDisplay;
-        }
-
-        if (lastOperator.equals("*"))
-            result = lastNumber * numberInDisplay;
-
-        if (lastOperator.equals("-"))
-            result = lastNumber - numberInDisplay;
-
-        if (lastOperator.equals("+"))
-            result = lastNumber + numberInDisplay;
-
-        return result;
-    }
-
-    void displayResult(double result){
-        setDisplayString(Double.toString(result));
-        lastNumber = result;
-        displayMode = RESULT_MODE;
-        clearOnNextDigit = true;
-    }
-
-    void displayError(String errorMessage){
-        setDisplayString(errorMessage);
-        lastNumber = 0;
-        displayMode = ERROR_MODE;
-        clearOnNextDigit = true;
-    }
 
     public static void main(String args[]) {
         Calculator cal = new Calculator();
@@ -474,14 +175,3 @@ class Calculator extends JFrame implements ActionListener{
 
 }
 
-class DivideByZeroException extends Exception{
-    public DivideByZeroException()
-    {
-        super();
-    }
-
-    public DivideByZeroException(String s)
-    {
-        super(s);
-    }
-}
